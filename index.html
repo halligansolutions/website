@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halligan Data Solutions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- REQUIRED: Your specific Spline Viewer Script -->
+     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* PRIMARY */
+            --neon-orange: #FF5F1F;
+            --orange-hover: #FF6A00;
+            
+            /* SECONDARY */
+            --neon-green: #3CFF4E;
+            
+            /* UPDATED LIGHT THEME NEUTRALS */
+            --background: #F2F2F2;
+            --card-bg: #FFFFFF;
+            --elevated-surface: #FAFAFA;
+            --ui-gray: #E8E8E8;
+            --border-gray: #D0D0D0;
+            --grid-line-gray: #DCDCDC;
+            
+            /* UPDATED LIGHT THEME TEXT */
+            --soft-white: #FFFFFF;
+            --primary-text: #2A2A2A;
+            --secondary-text: #4A4A4A;
+            --muted-text: #6A6A6A;
+            --disabled-text: #8A8A8A;
+            
+            /* EFFECTS */
+            --orange-glow: rgba(255, 95, 31, 0.15);
+            --green-glow: rgba(60, 255, 78, 0.15);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background);
+            color: var(--primary-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-gray);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--neon-orange);
+            text-decoration: none;
+            text-shadow: 0 0 10px var(--orange-glow);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--primary-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-menu a:hover {
+            color: var(--neon-orange);
+            background-color: var(--elevated-surface);
+            box-shadow: 0 0 15px var(--orange-glow);
+        }
+
+        /* --- HERO SECTION WITH SPLINE --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            /* Fallback background if Spline doesn't load immediately */
+            background: linear-gradient(135deg, var(--background) 0%, var(--elevated-surface) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Container for the 3D Scene */
+        .spline-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Sits behind the content */
+        }
+
+        /* Force the viewer to take full space */
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+            display: block; /* Removes default inline spacing */
+        }
+
+        /* Content wrapper that sits ON TOP of Spline */
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2; /* Important: Higher than spline-background */
+            
+            /* This allows mouse clicks to pass through empty spaces to the 3D model */
+            pointer-events: none; 
+        }
+
+        /* Re-enable clicking for text and buttons */
+        .hero-content h1, 
+        .hero-content p, 
+        .hero-content a {
+            pointer-events: auto; 
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-text);
+            text-shadow: 0 0 20px var(--orange-glow);
+            /* Soft white shadow to ensure text is readable against any dark 3D elements */
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .hero .company-name {
+            color: var(--neon-orange);
+            text-shadow: 0 0 30px var(--orange-glow);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            /* Soft white shadow for readability */
+            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--neon-orange), var(--orange-hover));
+            color: var(--soft-white);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px var(--orange-glow);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--orange-glow);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 5rem 0;
+            background-color: var(--elevated-surface);
+            position: relative;
+            z-index: 2; /* Ensures it sits above the fixed hero if needed */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary-text);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: var(--neon-orange);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--orange-glow), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: var(--neon-orange);
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            color: var(--primary-text);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .service-card p {
+            color: var(--secondary-text);
+            line-height: 1.6;
+        }
+
+        /* Project Examples Section */
+        .projects {
+            padding: 5rem 0;
+            background-color: var(--background);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border-color: var(--neon-green);
+        }
+
+        .project-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--ui-gray), var(--elevated-surface));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--neon-green);
+            position: relative;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-card h3 {
+            color: var(--primary-text);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .project-card p {
+            color: var(--secondary-text);
+            margin-bottom: 1rem;
+        }
+
+        .project-tag {
+            display: inline-block;
+            background-color: var(--ui-gray);
+            color: var(--neon-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid var(--neon-green);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-gray);
+            padding: 3rem 0 1rem;
+            text-align: center;
+            box-shadow: 0 -3px 15px rgba(0,0,0,0.08);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .contact-info {
+            margin-bottom: 2rem;
+        }
+
+        .contact-info h3 {
+            color: var(--neon-orange);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info p {
+            color: var(--secondary-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .copyright {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .services-grid,
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .glow-animation {
+            animation: glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">Halligan Data Solutions</a>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        
+        <!-- SPLINE ANIMATION CONTAINER -->
+        <div class="spline-background"> 
+            <spline-viewer url="https://prod.spline.design/aJZ4VV6ToQX9v06s/scene.splinecode"></spline-viewer>
+        </div>
+
+        <!-- CONTENT (Sits on top) -->
+        <div class="hero-content">
+            <h1><span class="company-name glow-animation">Halligan</span> Data Solutions</h1>
+            <p>Transforming raw data into actionable insights through cutting-edge analytics, engineering excellence, and innovative visualization solutions.</p>
+            <a href="#projects" class="cta-button">Explore Our Work</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-database"></i>
+                    <h3>Data Engineering</h3>
+                    <p>Design and build robust data pipelines that efficiently collect, transform, and load your data across multiple platforms.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>Pipeline Management</h3>
+                    <p>Orchestrate complex data workflows with automated monitoring, error handling, and scalable processing capabilities.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-server"></i>
+                    <h3>Data Storage Solutions</h3>
+                    <p>Implement secure, scalable storage architectures optimized for your specific data volume and access patterns.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Data Visualization</h3>
+                    <p>Create compelling dashboards and interactive reports that make complex data accessible and actionable.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Standalone Applications</h3>
+                    <p>Develop custom data-driven applications tailored to your unique business requirements and workflows.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>Reporting & Analytics</h3>
+                    <p>Deliver automated reporting solutions and ad hoc analytical insights to drive informed decision-making.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Examples Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Project Examples</h2>
+            <div class="projects-grid">
+                <div class="project-card" onclick="openProject('snowflake')">
+                    <div class="project-image">
+                        <div class="project-image">
+                            <img src="'/Users/hunter/Desktop/Haligan Data Solutions/halligan_website/images/snowflake.png'" alt="Snowflake image" />
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Enterprise Data Warehouse</h3>
+                        <p>Complete data warehouse implementation using Snowflake, handling 500GB+ daily ingestion with real-time analytics capabilities.</p>
+                        <span class="project-tag">Snowflake</span>
+                    </div>
+                </div>
+                <div class="project-card" onclick="openProject('streamlit')">
+                    <div class="project-image">
+                        <img src="/Users/hunter/Desktop/Haligan Data Solutions/halligan_website/images/streamlit.png" alt="Snowflake image" />
+                    </div>
+                    <div class="project-content">
+                        <h3>Interactive Dashboard App</h3>
+                        <p>Custom Streamlit application for real-time data exploration with ML-powered predictive analytics and user-friendly interface.</p>
+                        <span class="project-tag">Streamlit</span>
+                    </div>
+                </div>
+                <div class="project-card" onclick="openProject('tableau')">
+                    <div class="project-image">
+                        <img src="/Users/hunter/Desktop/Haligan Data Solutions/halligan_website/images/tableau.png" alt="Snowflake image" />
+                    </div>
+                    <div class="project-content">
+                        <h3>Executive Analytics Suite</h3>
+                        <p>Comprehensive Tableau dashboard suite providing C-level executives with KPI tracking and performance insights across departments.</p>
+                        <span class="project-tag">Tableau</span>
+                    </div>
+                </div>
+                <div class="project-card" onclick="openProject('powerbi')">
+                    <div class="project-image">
+                        <img src="/Users/hunter/Desktop/Haligan Data Solutions/halligan_website/images/powerbi.jpg" />
+                    </div>
+                    <div class="project-content">
+                        <h3>Sales Performance Portal</h3>
+                        <p>Power BI solution integrating CRM and ERP data to provide sales teams with actionable insights and forecasting capabilities.</p>
+                        <span class="project-tag">Power BI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <h3>Get In Touch</h3>
+                <p><i class="fas fa-envelope"></i> contact@halligandatasolutions.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> Your City, State</p>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Halligan Data Solutions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Project click handlers
+        function openProject(projectType) {
+            let message = '';
+            switch(projectType) {
+                case 'snowflake':
+                    message = 'Opening Snowflake Data Warehouse project details...';
+                    break;
+                case 'streamlit':
+                    message = 'Loading Streamlit Dashboard application...';
+                    break;
+                case 'tableau':
+                    message = 'Accessing Tableau Analytics Suite...';
+                    break;
+                case 'powerbi':
+                    message = 'Navigating to Power BI Sales Portal...';
+                    break;
+            }
+            
+            alert(message + '\n\n(This would typically navigate to a detailed project page or demo)');
+        }
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            } else {
+                header.style.backgroundColor = 'var(--card-bg)';
+            }
+        });
+
+        // Add loading animation on page load
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-in-out';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
