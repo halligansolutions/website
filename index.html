@@ -6,6 +6,9 @@
     <title>Halligan Data Solutions</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
+    <!-- Creato Display Font -->
+    <link href="https://fonts.cdnfonts.com/css/creato-display" rel="stylesheet">
+    
     <!-- REQUIRED: Your specific Spline Viewer Script -->
      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
 
@@ -23,7 +26,7 @@
             --orange-hover: #FF6A00;
             
             /* SECONDARY */
-            --neon-green: #3CFF4E;
+            --neon-green: #FF3901;
             
             /* UPDATED LIGHT THEME NEUTRALS */
             --background: #F2F2F2;
@@ -46,7 +49,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Creato Display', sans-serif;
             background-color: var(--background);
             color: var(--primary-text);
             line-height: 1.6;
@@ -72,15 +75,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 0 0 rem;
         }
 
         .logo {
+            font-family: 'Creato Display', sans-serif;
             font-size: 1.8rem;
             font-weight: bold;
             color: var(--neon-orange);
             text-decoration: none;
             text-shadow: 0 0 10px var(--orange-glow);
+            margin-left: -6rem; /* nudge it further left */
         }
 
         .nav-menu {
@@ -153,6 +158,7 @@
         }
 
         .hero h1 {
+            font-family: 'Creato Display', sans-serif;
             font-size: 3.5rem;
             margin-bottom: 1rem;
             color: var(--primary-text);
@@ -182,6 +188,7 @@
             padding: 1rem 2rem;
             text-decoration: none;
             border-radius: 50px;
+            font-family: 'Creato Display', sans-serif;
             font-weight: bold;
             font-size: 1.1rem;
             transition: all 0.3s ease;
@@ -209,6 +216,7 @@
 
         .section-title {
             text-align: center;
+            font-family: 'Creato Display', sans-serif;
             font-size: 2.5rem;
             margin-bottom: 3rem;
             color: var(--primary-text);
@@ -307,6 +315,7 @@
             font-size: 4rem;
             color: var(--neon-green);
             position: relative;
+            padding: 2rem;
         }
 
         .project-content {
@@ -405,6 +414,17 @@
         .glow-animation {
             animation: glow 2s ease-in-out infinite;
         }
+        
+        /* FIXED: Uniform image sizing - all images same size */
+        .project-image img {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+
     </style>
 </head>
 <body>
@@ -479,48 +499,46 @@
     <!-- Project Examples Section -->
     <section id="projects" class="projects">
         <div class="container">
-            <h2 class="section-title">Project Examples</h2>
+            <h2 class="section-title">Featured Projects</h2>
             <div class="projects-grid">
-                <div class="project-card" onclick="openProject('snowflake')">
+                <div class="project-card" onclick="openProject('snowflvake')">
                     <div class="project-image">
-                        <div class="project-image">
-                            <img src="images/snowflake.png" alt="Snowflake image" />
-                        </div>
+                        <img src="images/snowflake.png" alt="Snowflake image" />
                     </div>
                     <div class="project-content">
                         <h3>Enterprise Data Warehouse</h3>
                         <p>Complete data warehouse implementation using Snowflake, handling 500GB+ daily ingestion with real-time analytics capabilities.</p>
-                        <span class="project-tag">Snowflake</span>
+                        <span class="project-tag">View Project</span>
                     </div>
                 </div>
                 <div class="project-card" onclick="openProject('streamlit')">
                     <div class="project-image">
-                        <img src="images/streamlit.png" alt="Snowflake image" />
+                        <img src="images/streamlit.png" alt="Streamlit image" />
                     </div>
                     <div class="project-content">
                         <h3>Interactive Dashboard App</h3>
                         <p>Custom Streamlit application for real-time data exploration with ML-powered predictive analytics and user-friendly interface.</p>
-                        <span class="project-tag">Streamlit</span>
+                        <span class="project-tag">View Project</span>
                     </div>
                 </div>
                 <div class="project-card" onclick="openProject('tableau')">
                     <div class="project-image">
-                        <img src="images/tableau.png" alt="Snowflake image" />
+                        <img src="images/tableau.png" alt="Tableau image" />
                     </div>
                     <div class="project-content">
                         <h3>Executive Analytics Suite</h3>
                         <p>Comprehensive Tableau dashboard suite providing C-level executives with KPI tracking and performance insights across departments.</p>
-                        <span class="project-tag">Tableau</span>
+                        <span class="project-tag">View Project</span>
                     </div>
                 </div>
                 <div class="project-card" onclick="openProject('powerbi')">
                     <div class="project-image">
-                        <img src="images/powerbi.jpg" />
+                        <img src="images/powerbi.png" alt="Power BI image" />
                     </div>
                     <div class="project-content">
                         <h3>Sales Performance Portal</h3>
                         <p>Power BI solution integrating CRM and ERP data to provide sales teams with actionable insights and forecasting capabilities.</p>
-                        <span class="project-tag">Power BI</span>
+                        <span class="project-tag">View Project</span>
                     </div>
                 </div>
             </div>
@@ -533,8 +551,7 @@
             <div class="contact-info">
                 <h3>Get In Touch</h3>
                 <p><i class="fas fa-envelope"></i> contact@halligandatasolutions.com</p>
-                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
-                <p><i class="fas fa-map-marker-alt"></i> Your City, State</p>
+                <p><i class="fas fa-map-marker-alt"></i> Toronto, Ontario</p>
             </div>
             <div class="copyright">
                 <p>&copy; 2026 Halligan Data Solutions. All rights reserved.</p>
